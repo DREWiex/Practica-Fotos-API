@@ -12,6 +12,8 @@
 
     
     <header id="header">
+
+        <h1 class="titulo">Practica Pexels</h1>
         <!-- logo / buscador / botones varios (decoración) -->
     </header>
 
@@ -20,21 +22,27 @@
        
         <form id="formulario" action="busqueda.html" method="get">
             <input type="text" id="texto" name="texto">
-            <input type="submit">
+            <input id ="mm" type="submit">
         </form>
 
-        <div id="card1" >
-            <a href="busqueda.html?texto=flower" class="enlaces" id="flower" data-id="flower">Flores</a>
-        </div>
 
+        <div id="contenedor-grid">
+        <div id="card1" >
+            <img class="fotosuno" src="css/fotos-css/foto-flores.jpg" alt="Flores">
+            <a href="busqueda.html?id=flower" class="enlaces" id="flower" data-id="flower">Flores</a>
+           
+        </div>
+        
         <div id="card2" id="nature">
-            <a href="busqueda.html?texto=natur" class="enlaces">naturaleza</a>
+            <img class="fotosuno" src="css/fotos-css/naturaleza.jpg" alt="Flores">
+            <a href="busqueda.html?id=natur" class="enlaces" >naturaleza</a>
         </div>
 
         <div id="card3" id="playa">
-            <a href="busqueda.html?texto=playa"class="enlaces">playa</a>
+            <img class="fotosuno" src="css/fotos-css/playa.jpg" alt="Flores">
+            <a href="busqueda.html?id=playa"class="enlaces" >playa</a>
         </div>
-
+        </div>
         
 
         <div id="pintar">

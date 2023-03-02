@@ -16,21 +16,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //* EVENTOS
 
-  document.addEventListener("click", ({ target }) => {
 
-    if (target.matches("#mas")) {
-      pagina += 1;
+  document.addEventListener("click", ({target}) => {
+    
+    if(target.matches("#mas")){
+      pagina ++;
       pintarBotones(pagina);
-      pintarFotos(getQuery(), pagina);
+      pintarFotos(getTexto(), pagina);
     };
 
-    if (target.matches("#menos")) {
-      pagina -= 1;
+    if(target.matches("#menos")){
+      pagina --;
       pintarBotones(pagina);
-      pintarFotos(getQuery(), pagina);
+      pintarFotos(getTexto(), pagina);
     };
-
-    if (target.matches(`#pintar img`)) {
+     if (target.matches(`#pintar img`)) {
       let id = target.id
       location.assign("fotoGrande.html?id=" + id)
 
@@ -53,14 +53,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const texto = params.get("texto");
 
+
       pintarBotones();
       pintarFotos(texto);
 
     }
     else if (params.has("id")) {
 
-      const id = params.get("id");
-      // console.log(id);
+    pintarBotones();
+    pintarFotos(texto);
+
+
+      const id = params.get("id")
       pintarFotoGrande(id)
 
     }
@@ -148,21 +152,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const fotos = await consulta(busqueda, pagina, orientacion);
     const arrayfotos = fotos.photos;
+ 
 
-    // let ide=await conseguirID()
-    // console.log(ide);
-    arrayfotos.forEach(({ src, id }) => {
+    arrayfotos.forEach((item) => {
       let img = document.createElement("IMG");
-      img.src = src.medium;
-      img.id = id;
-      // let a = document.createElement("A");
-      // a.append(img)
-      // a.href=`fotoGrande.html?id=1`   
-      div.append(img);
+      img.src = item.src.medium;
+      img.id = item.id;
+      img.alt = item.alt;
+      img.title = item.alt;
+      let p = document.createElement("P");
+      p.textContent = item.photographer;
+
+      div.append(img, p);
+
 
     });
 
   };
+
 
 
 
@@ -182,18 +189,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  const pintarBotones = async (page = 1) => {
+ 
+
+ 
+  const pintarBotones = (page = 1) => {
+
 
     botones.innerHTML = "";
-
-    const fotos = await consulta(texto, pagina);
 
     let botonFlechaMas = document.createElement("BUTTON");
     botonFlechaMas.id = "mas";
     botonFlechaMas.textContent = ">>";
 
     let botonUno = document.createElement("BUTTON");
-    botonUno.id = "pagina-actual"
+    //botonUno.id = "pagina-actual"
     botonUno.textContent = page;
 
     let botonFlechaMenos = document.createElement("BUTTON");
@@ -206,15 +215,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  const getQuery = () => { //* pasa el argumento "texto" a la función pintarFotos al ser llamado en el evento
+  const getTexto = () => { //* pasa el argumento "texto" a la función pintarFotos al ser llamado en el evento
 
     let url = location.search;
     let params = new URLSearchParams(url)
     return params.get("texto");
 
   }
-
-
+  
 
   init();
 

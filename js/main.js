@@ -16,28 +16,18 @@ document.addEventListener("DOMContentLoaded", () => {
   //* EVENTOS
 
   document.addEventListener("click", ({target}) => {
+    
+    if(target.matches("#mas")){
+      pagina ++;
+      pintarBotones(pagina);
+      pintarFotos(getTexto(), pagina);
+    };
 
-        if(target.matches("#mas")){
-          pagina += 1;
-          pintarBotones(pagina);
-          pintarFotos(getQuery(), pagina);
-        };
-
-        if(target.matches("#menos")){
-          pagina -= 1;
-          pintarBotones(pagina);
-          pintarFotos(getQuery(), pagina);
-        };
-
-        /*
-        if(select.value == "portrait"){
-          console.log(select.value);
-          pintarFotosOrientadas("portrait");
-        }else if(select.value == "landscape"){
-          console.log(select.value)
-          pintarFotosOrientadas("landscape");
-        }
-        */
+    if(target.matches("#menos")){
+      pagina --;
+      pintarBotones(pagina);
+      pintarFotos(getTexto(), pagina);
+    };
   
   });
 
@@ -55,8 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if(params.has("texto")){
 
     const texto = params.get("texto");
-
-  //   const page=params.get("page");
 
     pintarBotones();
     pintarFotos(texto);
@@ -119,12 +107,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const arrayfotos = fotos.photos;
 
-    arrayfotos.forEach(({ src,id }) => {
+    arrayfotos.forEach((item) => {
       let img = document.createElement("IMG");
-      img.src = src.medium;
-      img.id = id;
+      img.src = item.src.medium;
+      img.id = item.id;
+      img.alt = item.alt;
+      img.title = item.alt;
+      let p = document.createElement("P");
+      p.textContent = item.photographer;
 
-      div.append(img);
+      div.append(img, p);
 
     }); 
     
@@ -132,18 +124,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
  
-  const pintarBotones = async (page = 1) => {
+  const pintarBotones = (page = 1) => {
 
     botones.innerHTML = "";
-
-    const fotos = await consulta(texto, pagina);
 
     let botonFlechaMas = document.createElement("BUTTON");
     botonFlechaMas.id = "mas";
     botonFlechaMas.textContent = ">>";
 
     let botonUno = document.createElement("BUTTON");
-    botonUno.id = "pagina-actual"
+    //botonUno.id = "pagina-actual"
     botonUno.textContent = page;
 
     let botonFlechaMenos = document.createElement("BUTTON");
@@ -156,15 +146,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  const getQuery = () => { //* pasa el argumento "texto" a la función pintarFotos al ser llamado en el evento
+  const getTexto = () => { //* pasa el argumento "texto" a la función pintarFotos al ser llamado en el evento
 
     let url = location.search;
     let params = new URLSearchParams(url)
     return params.get("texto");
 
   }
-
-
+  
 
   init();
 

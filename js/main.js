@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const texto = document.querySelector("#texto");
   const botones = document.querySelector("#botones");
   const select = document.querySelector('#select');
+  const contenedorFoto=document.querySelector('#contenedorFoto');
   let pagina = 1;
     
 
@@ -28,21 +29,16 @@ document.addEventListener("DOMContentLoaded", () => {
           pintarBotones(pagina);
           pintarFotos(getQuery(), pagina);
         };
-
-        /*
-        if(select.value == "portrait"){
-          console.log(select.value);
-          pintarFotosOrientadas("portrait");
-        }else if(select.value == "landscape"){
-          console.log(select.value)
-          pintarFotosOrientadas("landscape");
-        }
-        */
-  
   });
 
+  document.addEventListener("click", ({target}) => {
 
+    if (target.matches(`#pintar img`)) {
+      let id = target.id
+      location.assign("fotoGrande.html?id="+ id)
 
+    }
+});
 
   //* FUNCIONES
 
@@ -56,20 +52,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const texto = params.get("texto");
 
-  //   const page=params.get("page");
-
     pintarBotones();
     pintarFotos(texto);
 
-  }else{
-    console.log("yoquese");
+  }
+  else if (params.has("id")){
+
+    const id = params.get("id");
+    // console.log(id);
+      pintarFotoGrande(id)
+   
   }
 
-  };
+   };
 
 
 
-  const consulta = async (busqueda, page, orientacion) => {
+  const consulta = async (busqueda, page, orientacion,id) => {
 
     try {
 
@@ -83,12 +82,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         ruta = `https://api.pexels.com/v1/search?query=${busqueda}&per_page=15&page=${page}`;
 
-      };
+      }
+     else if(id != null) {
 
+      ruta = `https://api.pexels.com/v1/photos/${id}`;
 
-        
-
-
+    }
+      
         let peticion = await fetch(ruta,
         {
           method: "GET",
@@ -109,27 +109,76 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // const consultapequeña = async(id) => {
+  //   console.log(id);
 
+  //   try {
+
+  //      let  ruta = `https://api.pexels.com/v1/photos/${id}`                                      
+  //       console.log(ruta);
+  //       let peticion = await fetch(ruta,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: "AF47xNz2Dq7rUjCuFzlGjs0eUuIQI87nopfo6HwwFypgZTSOZJdqEHC1"
+  //         }
+  //       });
+
+  //       if(peticion.ok){
+  //       const respuesta = await peticion.json();
+
+  //       // console.log(respuesta);
+          
+  //       return respuesta;
+      
+  //     }else throw "Error en la ejecución";
+
+  //   }catch(error){
+      
+  //     return error;
+  //   }
+  // };
+
+ 
 
   const pintarFotos = async (busqueda, pagina, orientacion) => {
 
     div.innerHTML = "";
     
     const fotos = await consulta(busqueda, pagina, orientacion);
-
     const arrayfotos = fotos.photos;
 
+    // let ide=await conseguirID()
+    // console.log(ide);
     arrayfotos.forEach(({ src,id }) => {
       let img = document.createElement("IMG");
       img.src = src.medium;
       img.id = id;
-
+      // let a = document.createElement("A");
+      // a.append(img)
+      // a.href=`fotoGrande.html?id=1`   
       div.append(img);
 
     }); 
     
   };
 
+
+
+  const pintarFotoGrande= async(id)=>{
+
+    const fotosGrande = await consulta(null,null,null,id);
+    console.log(fotosGrande);
+    let img=document.createElement("img")
+    let p=document.createElement("p")
+      p.textContent=fotosGrande.photographer
+    img.src=fotosGrande.src.large2x
+    img.alt=fotosGrande.alt
+    img.title=fotosGrande.alt
+
+    contenedorFoto.append(img,p)
+    
+  }
 
  
   const pintarBotones = async (page = 1) => {

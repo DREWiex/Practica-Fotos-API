@@ -2,20 +2,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   //* VARIABLES
-  const flores = document.querySelector("#flower");
+
   const div = document.querySelector("#pintar");
-  const enlaces = document.querySelector(".enlaces");
-  const formulario = document.querySelector("#formulario");
-  const texto = document.querySelector("#texto");
   const botones = document.querySelector("#botones");
-  const select = document.querySelector('#select');
-  const contenedorFoto = document.querySelector('#contenedorFoto');
+  const contenedorFoto = document.querySelector("#contenedorFoto");
   let pagina = 1;
+
+  //const flores = document.querySelector("#flower");
+  //const enlaces = document.querySelector(".enlaces");
+  //const formulario = document.querySelector("#formulario");
+  //const texto = document.querySelector("#texto");
+  //const select = document.querySelector("#select");
 
 
 
   //* EVENTOS
-
 
   document.addEventListener("click", ({target}) => {
     
@@ -30,12 +31,11 @@ document.addEventListener("DOMContentLoaded", () => {
       pintarBotones(pagina);
       pintarFotos(getTexto(), pagina);
     };
+
      if (target.matches(`#pintar img`)) {
       let id = target.id
       location.assign("fotoGrande.html?id=" + id)
-
     }
-
 
   });
 
@@ -53,19 +53,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const texto = params.get("texto");
 
-
       pintarBotones();
       pintarFotos(texto);
 
-    }
-    else if (params.has("id")) {
+    } else if (params.has("id")) {
 
-    pintarBotones();
-    pintarFotos(texto);
-
-
-      const id = params.get("id")
-      pintarFotoGrande(id)
+      const id = params.get("id");
+      pintarFotoGrande(id);
 
     }
 
@@ -87,8 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         ruta = `https://api.pexels.com/v1/search?query=${busqueda}&per_page=15&page=${page}`;
 
-      }
-      else if (id != null) {
+      } else if (id != null) {
 
         ruta = `https://api.pexels.com/v1/photos/${id}`;
 
@@ -114,43 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // const consultapequeña = async(id) => {
-  //   console.log(id);
-
-  //   try {
-
-  //      let  ruta = `https://api.pexels.com/v1/photos/${id}`                                      
-  //       console.log(ruta);
-  //       let peticion = await fetch(ruta,
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: "AF47xNz2Dq7rUjCuFzlGjs0eUuIQI87nopfo6HwwFypgZTSOZJdqEHC1"
-  //         }
-  //       });
-
-  //       if(peticion.ok){
-  //       const respuesta = await peticion.json();
-
-  //       // console.log(respuesta);
-
-  //       return respuesta;
-
-  //     }else throw "Error en la ejecución";
-
-  //   }catch(error){
-
-  //     return error;
-  //   }
-  // };
 
 
-
-  const pintarFotos = async (busqueda, pagina, orientacion) => {
+  const pintarFotos = async (busqueda, page, orientacion) => {
 
     div.innerHTML = "";
 
-    const fotos = await consulta(busqueda, pagina, orientacion);
+    const fotos = await consulta(busqueda, page, orientacion);
     const arrayfotos = fotos.photos;
  
 
@@ -160,11 +123,11 @@ document.addEventListener("DOMContentLoaded", () => {
       img.id = item.id;
       img.alt = item.alt;
       img.title = item.alt;
-      let p = document.createElement("P");
-      p.textContent = item.photographer;
+      //let p = document.createElement("P");
+      //p.textContent = item.photographer;
 
-      div.append(img, p);
-
+      //div.append(img, p);
+      div.append(img);
 
     });
 
@@ -172,24 +135,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
   const pintarFotoGrande = async (id) => {
 
     const fotosGrande = await consulta(null, null, null, id);
-    console.log(fotosGrande);
-    let img = document.createElement("img")
-    let p = document.createElement("p")
-    p.textContent = fotosGrande.photographer
-    img.src = fotosGrande.src.large2x
-    img.alt = fotosGrande.alt
-    img.title = fotosGrande.alt
 
-    contenedorFoto.append(img, p)
+    let img = document.createElement("img");
+    let p = document.createElement("p");
+    p.textContent = fotosGrande.photographer;
+    img.src = fotosGrande.src.large2x;
+    img.alt = fotosGrande.alt;
+    img.title = fotosGrande.alt;
 
-  }
+    contenedorFoto.append(img, p);
 
+  };
 
- 
 
  
   const pintarBotones = (page = 1) => {
@@ -218,10 +178,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const getTexto = () => { //* pasa el argumento "texto" a la función pintarFotos al ser llamado en el evento
 
     let url = location.search;
-    let params = new URLSearchParams(url)
+    let params = new URLSearchParams(url);
     return params.get("texto");
 
-  }
+  };
   
 
   init();

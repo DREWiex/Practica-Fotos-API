@@ -9,87 +9,88 @@ document.addEventListener("DOMContentLoaded", () => {
   const texto = document.querySelector("#texto");
   const botones = document.querySelector("#botones");
   const select = document.querySelector('#select');
-  const contenedorFoto=document.querySelector('#contenedorFoto');
+  const contenedorFoto = document.querySelector('#contenedorFoto');
   let pagina = 1;
-    
+
 
 
   //* EVENTOS
 
-  document.addEventListener("click", ({target}) => {
+  document.addEventListener("click", ({ target }) => {
 
-        if(target.matches("#mas")){
-          pagina += 1;
-          pintarBotones(pagina);
-          pintarFotos(getQuery(), pagina);
-        };
+    if (target.matches("#mas")) {
+      pagina += 1;
+      pintarBotones(pagina);
+      pintarFotos(getQuery(), pagina);
+    };
 
-        if(target.matches("#menos")){
-          pagina -= 1;
-          pintarBotones(pagina);
-          pintarFotos(getQuery(), pagina);
-        };
-  });
-
-  document.addEventListener("click", ({target}) => {
+    if (target.matches("#menos")) {
+      pagina -= 1;
+      pintarBotones(pagina);
+      pintarFotos(getQuery(), pagina);
+    };
 
     if (target.matches(`#pintar img`)) {
       let id = target.id
-      location.assign("fotoGrande.html?id="+ id)
+      location.assign("fotoGrande.html?id=" + id)
 
     }
-});
+
+
+  });
+
+  
 
   //* FUNCIONES
 
   const init = () => {
 
-  const url = location.search;
+    const url = location.search;
 
-  let params = new URLSearchParams(url);
+    let params = new URLSearchParams(url);
 
-  if(params.has("texto")){
+    if (params.has("texto")) {
 
-    const texto = params.get("texto");
+      const texto = params.get("texto");
 
-    pintarBotones();
-    pintarFotos(texto);
+      pintarBotones();
+      pintarFotos(texto);
 
-  }
-  else if (params.has("id")){
+    }
+    else if (params.has("id")) {
 
-    const id = params.get("id");
-    // console.log(id);
+      const id = params.get("id");
+      // console.log(id);
       pintarFotoGrande(id)
-   
-  }
 
-   };
+    }
+
+  };
 
 
 
-  const consulta = async (busqueda, page, orientacion,id) => {
+  const consulta = async (busqueda, page, orientacion, id) => {
 
     try {
 
-       let ruta;
+      let ruta;
 
-       if(busqueda && orientacion){
+      if (busqueda && orientacion) {
 
         ruta = `https://api.pexels.com/v1/search?query=${busqueda}&orientation=${orientacion}&per_page=15&page=${page}`;
 
-      } else if(busqueda != null) {
+      } else if (busqueda != null) {
 
         ruta = `https://api.pexels.com/v1/search?query=${busqueda}&per_page=15&page=${page}`;
 
       }
-     else if(id != null) {
+      else if (id != null) {
 
-      ruta = `https://api.pexels.com/v1/photos/${id}`;
+        ruta = `https://api.pexels.com/v1/photos/${id}`;
 
-    }
-      
-        let peticion = await fetch(ruta,
+      }
+
+      let peticion = await fetch(ruta,
         {
           method: "GET",
           headers: {
@@ -97,14 +98,14 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
 
-        if(peticion.ok){
+      if (peticion.ok) {
         const respuesta = await peticion.json();
         return respuesta;
-      
-      }else throw "Error en la ejecución";
 
-    }catch(error){
-      
+      } else throw "Error en la ejecución";
+
+    } catch (error) {
+
       return error;
     }
   };
@@ -128,29 +129,29 @@ document.addEventListener("DOMContentLoaded", () => {
   //       const respuesta = await peticion.json();
 
   //       // console.log(respuesta);
-          
+
   //       return respuesta;
-      
+
   //     }else throw "Error en la ejecución";
 
   //   }catch(error){
-      
+
   //     return error;
   //   }
   // };
 
- 
+
 
   const pintarFotos = async (busqueda, pagina, orientacion) => {
 
     div.innerHTML = "";
-    
+
     const fotos = await consulta(busqueda, pagina, orientacion);
     const arrayfotos = fotos.photos;
 
     // let ide=await conseguirID()
     // console.log(ide);
-    arrayfotos.forEach(({ src,id }) => {
+    arrayfotos.forEach(({ src, id }) => {
       let img = document.createElement("IMG");
       img.src = src.medium;
       img.id = id;
@@ -159,28 +160,28 @@ document.addEventListener("DOMContentLoaded", () => {
       // a.href=`fotoGrande.html?id=1`   
       div.append(img);
 
-    }); 
-    
+    });
+
   };
 
 
 
-  const pintarFotoGrande= async(id)=>{
+  const pintarFotoGrande = async (id) => {
 
-    const fotosGrande = await consulta(null,null,null,id);
+    const fotosGrande = await consulta(null, null, null, id);
     console.log(fotosGrande);
-    let img=document.createElement("img")
-    let p=document.createElement("p")
-      p.textContent=fotosGrande.photographer
-    img.src=fotosGrande.src.large2x
-    img.alt=fotosGrande.alt
-    img.title=fotosGrande.alt
+    let img = document.createElement("img")
+    let p = document.createElement("p")
+    p.textContent = fotosGrande.photographer
+    img.src = fotosGrande.src.large2x
+    img.alt = fotosGrande.alt
+    img.title = fotosGrande.alt
 
-    contenedorFoto.append(img,p)
-    
+    contenedorFoto.append(img, p)
+
   }
 
- 
+
   const pintarBotones = async (page = 1) => {
 
     botones.innerHTML = "";
@@ -198,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let botonFlechaMenos = document.createElement("BUTTON");
     botonFlechaMenos.id = "menos";
     botonFlechaMenos.textContent = "<<";
-    
+
     botones.append(botonFlechaMenos, botonUno, botonFlechaMas);
 
   };
